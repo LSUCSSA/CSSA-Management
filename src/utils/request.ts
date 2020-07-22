@@ -27,7 +27,7 @@ const codeMessage = {
 /**
  * 异常处理程序
  */
-const errorHandler = (error: { response: Response}): Response => {
+const errorHandler = (error: { response: Response }): Response => {
   const { response, data } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -73,7 +73,7 @@ const request = extend({
   credentials: 'include', // 默认请求是否带上cookie
 });
 // request拦截器, 改变url 或 options.
-request.interceptors.request.use(async (url:string, options) => {
+request.interceptors.request.use(async (url: string, options: object) => {
   const aToken = await token.get();
   if (url === '/api/auth/local') {
     return {
@@ -83,8 +83,6 @@ request.interceptors.request.use(async (url:string, options) => {
   }
   if (aToken) {
     const headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
       Authorization: `Bearer ${aToken}`,
     };
     return {

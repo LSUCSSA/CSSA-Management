@@ -10,36 +10,75 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { stringify } from 'qs'; // import DragAndDrop from "@/lib/withDragDropContext"
 
 import GuideUpload from './GuideUpload';
-import {setGuideID} from "@/services/editor";
+import { setGuideID } from '@/services/editor';
+import UploadHomeImages from './UploadHomeImages';
 
-const Editor: React.FC = ({ dispatch, intl, sponsorsList, isSponsorLoading }) => {
+const Editor: React.FC = ({
+  dispatch,
+  intl,
+  sponsorsList,
+  isSponsorLoading,
+  isSlideLoading,
+  slideList,
+}) => {
   // const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     dispatch({
       type: 'editor/getSponsorList',
     });
+    dispatch({
+      type: 'editor/getHomeSlide',
+    });
   }, []);
 
-  const submitSponsorList = value => {
+  const submitSponsorList = (value) => {
     dispatch({
       type: 'editor/uploadSponsorList',
       payload: value,
     });
   };
+  const uploadImage = (value) => {
+    dispatch({
+      type: 'editor/uploadHomeSlide',
+      payload: value,
+    });
+  };
+  const getImages = () => {
+    dispatch({
+      type: 'editor/getHomeSlide',
+    });
+  };
+
   return (
     <PageHeaderWrapper className={styles.main}>
+      <UploadHomeImages
+        slideList={slideList}
+        upload={uploadImage}
+        isLoading={isSlideLoading}
+        getImages={getImages}
+      />
       <GuideUpload onChangeId={setGuideID} />
-        <Spin style={{
-          paddingTop: "50%",
+      <Spin
+        style={{
+          paddingTop: '50%',
           textAlign: 'center',
-        }} spinning={isSponsorLoading} size="large" >
-          <Sponsors sponsorsList={sponsorsList} onChange={submitSponsorList}  isLoading={isSponsorLoading}/>
-        </Spin>
+        }}
+        spinning={isSponsorLoading}
+        size="large"
+      >
+        <Sponsors
+          sponsorsList={sponsorsList}
+          onChange={submitSponsorList}
+          isLoading={isSponsorLoading}
+        />
+      </Spin>
     </PageHeaderWrapper>
   );
 };
 
 export default connect(({ editor, loading }) => ({
   sponsorsList: editor.sponsorsList,
-  isSponsorLoading: loading.effects["editor/getSponsorList"],
+  slideList: editor.slideList,
+  isSponsorLoading: loading.effects['editor/getSponsorList'],
+  isSlideLoading: loading.effects['editor/getHomeSlide'],
 }))(injectIntl(Editor));

@@ -1,19 +1,20 @@
-import { uploadRoster } from '@/services/upload';
-import {Effect, Reducer} from "umi";
+import { uploadRoster, upload } from '@/services/upload';
+import { Effect, Reducer } from 'umi';
 
 export interface StateType {
-  file: undefined | object,
-  roster: Array<object>
+  file: undefined | object;
+  roster: Array<object>;
 }
 
 export interface UploadModelType {
   namespace: string;
   state: StateType;
   effects: {
-    upload: Effect;
+    uploadRoster: Effect;
+    uploadAssets: Effect;
   };
   reducers: {
-    setUpload: Reducer<StateType>;
+    setRoster: Reducer<StateType>;
     saveCurrentUser: Reducer<StateType>;
     changeNotifyCount: Reducer<StateType>;
   };
@@ -25,18 +26,19 @@ const UploadModel: UploadModelType = {
     roster: [],
   },
   effects: {
-    *upload({ payload }, { call, put }) {
+    *uploadRoster({ payload }, { call, put }) {
       const response = yield call(uploadRoster, payload);
       yield put({
-        type: 'setUpload',
+        type: 'setRoster',
         payload: response,
       });
     },
   },
   reducers: {
-    setUpload(state, action) {
+    setRoster(state, action) {
       return { ...state, roster: action.payload };
     },
+
     saveCurrentUser(state, action) {
       return { ...state, currentUser: action.payload || {} };
     },

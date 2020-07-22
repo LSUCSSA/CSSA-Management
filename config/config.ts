@@ -88,7 +88,6 @@ export default defineConfig({
               path: '/account/settings',
               component: './user/AccountSettings',
             },
-
             {
               name: 'Site Editor',
               icon: 'smile',
@@ -100,12 +99,27 @@ export default defineConfig({
               icon: 'smile',
               path: '/roster',
               component: './Roster',
-            },// {
-            //   name: '查询表格',
-            //   icon: 'smile',
-            //   path: '/roster',
-            //   component: './Roster',
-            // },
+            },
+            {
+              name: '新闻媒体部',
+              icon: 'smile',
+              path: '/media',
+              component: './NewsMedia',
+            },
+            {
+              name: '活动策划部',
+              icon: 'smile',
+              path: '/eventplanning',
+              component: './EventPlanning',
+              routes: [
+                {
+                  name: '任务目标看板',
+                  icon: 'smile',
+                  path: '/eventplanning/kanban',
+                  component: './EventPlanning',
+                },
+              ],
+            },
             {
               component: './404',
             },
@@ -131,7 +145,6 @@ export default defineConfig({
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
-  },
-  base: '/management/',
-  publicPath: '/management/',
+  }, // base: '/management/',
+  // publicPath: '/management/',
 });

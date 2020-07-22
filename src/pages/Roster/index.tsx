@@ -1,17 +1,17 @@
-import {DownOutlined, PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, Divider, Dropdown, Menu, message, Popover, Space, Modal} from 'antd';
+import { DownOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, Divider, Dropdown, Menu, message, Popover, Space, Modal } from 'antd';
 
-import React, {useState, useRef, useEffect} from 'react';
-import {PageHeaderWrapper} from '@ant-design/pro-layout';
-import ProTable, {ProColumns, ActionType} from '@ant-design/pro-table';
-import {connect} from 'umi';
-import {StateType} from '@/models/roster';
-import {ConnectState} from '@/models/connect';
-import {injectIntl} from 'react-intl';
+import React, { useState, useRef, useEffect } from 'react';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
+import { connect } from 'umi';
+import { StateType } from '@/models/roster';
+import { ConnectState } from '@/models/connect';
+import { injectIntl } from 'react-intl';
+import { addMember, removeMember, removeMembers } from '@/services/roster';
 import CreateForm from './components/CreateForm';
-import UpdateForm, {FormValueType} from './components/UpdateForm';
-import {TableListItem} from './data.d';
-import {addMember, removeMember, removeMembers, updateMember} from '@/services/roster'
+import UpdateForm, { FormValueType } from './components/UpdateForm';
+import { TableListItem } from './data';
 
 /**
  * 添加节点
@@ -52,20 +52,22 @@ const handleUpdate = async (dispatch, id: string, fields: FormValueType) => {
   try {
     await dispatch({
       type: 'roster/updateMember',
-      payload: fields.publicPhoto ? {
-        id,
-        name: fields.name,
-        email: fields.email,
-        position: fields.position,
-        department: fields.department,
-        publicPhoto: fields.publicPhoto,
-      } : {
-        id,
-        name: fields.name,
-        email: fields.email,
-        position: fields.position,
-        department: fields.department,
-      }
+      payload: fields.publicPhoto
+        ? {
+            id,
+            name: fields.name,
+            email: fields.email,
+            position: fields.position,
+            department: fields.department,
+            publicPhoto: fields.publicPhoto,
+          }
+        : {
+            id,
+            name: fields.name,
+            email: fields.email,
+            position: fields.position,
+            department: fields.department,
+          },
     });
     hide();
     message.success('配置成功');
@@ -87,7 +89,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
 
   try {
     await removeMembers({
-      ids: selectedRows.map(row => row),
+      ids: selectedRows.map((row) => row),
     });
 
     hide();
@@ -100,8 +102,15 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
-
-const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, isGetRosterLoading, isUploadLoading, removeStatus}) => {
+const TableList: React.FC<StateType> = ({
+  positionList,
+  dispatch,
+  roster,
+  intl,
+  isGetRosterLoading,
+  isUploadLoading,
+  removeStatus,
+}) => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
@@ -150,7 +159,7 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
       title: '职位',
       dataIndex: 'title',
     },
-    {title: '分数', dataIndex: 'points'},
+    { title: '分数', dataIndex: 'points' },
     {
       title: '操作',
       dataIndex: 'option',
@@ -166,19 +175,19 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
             >
               更改
             </a>
-            <Divider type="vertical"/>
+            <Divider type="vertical" />
             <Popover content={addPoints}>
               <a>加分</a>
             </Popover>
-            <Divider type="vertical"/>
+            <Divider type="vertical" />
             <a
               onClick={() => {
                 Modal.confirm({
                   title: 'Confirm',
                   maskClosable: true,
-                  icon: <ExclamationCircleOutlined/>,
+                  icon: <ExclamationCircleOutlined />,
                   content: '确认删除?',
-                  okType: "danger",
+                  okType: 'danger',
                   okText: '确认',
                   cancelText: '取消',
                   onOk: async () => {
@@ -186,7 +195,7 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
                     dispatch({
                       type: 'roster/getRosters',
                     });
-                  }
+                  },
                 });
               }}
             >
@@ -200,24 +209,30 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
 
   return (
     <PageHeaderWrapper>
-      <Upload onFinished={actionRef.current ?
-        () => dispatch({
-          type: 'roster/getRosters',
-        }) : null}/>
+      <Upload
+        onFinished={
+          actionRef.current
+            ? () =>
+                dispatch({
+                  type: 'roster/getRosters',
+                })
+            : null
+        }
+      />
       <ProTable<TableListItem>
         headerTitle="成员列表"
         actionRef={actionRef}
         loading={isGetRosterLoading}
         rowKey="id"
-        toolBarRender={(action, {selectedRowKeys}) => [
-          <Button icon={<PlusOutlined/>} type="primary" onClick={() => handleModalVisible(true)}>
+        toolBarRender={(action, { selectedRowKeys }) => [
+          <Button icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible(true)}>
             添加成员
           </Button>,
           selectedRowKeys && selectedRowKeys.length > 0 && (
             <Dropdown
               overlay={
                 <Menu
-                  onClick={async e => {
+                  onClick={async (e) => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRowKeys);
                       actionRef.current.clearSelected();
@@ -234,12 +249,12 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
               }
             >
               <Button>
-                批量操作 <DownOutlined/>
+                批量操作 <DownOutlined />
               </Button>
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({selectedRowKeys, selectedRows}) => {
+        tableAlertRender={({ selectedRowKeys, selectedRows }) => {
           return selectedRowKeys.length === 0 ? (
             false
           ) : (
@@ -256,8 +271,8 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
             </div>
           );
         }}
-        tableAlertOptionRender={props => {
-          const {onCleanSelected} = props;
+        tableAlertOptionRender={(props) => {
+          const { onCleanSelected } = props;
 
           return (
             <Space>
@@ -283,17 +298,18 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
             rowKey: i,
             ...r,
             title:
-              intl.formatMessage({id: `roster.department.${r.department}`}) +
-              intl.formatMessage({id: `roster.position.${r.position}`}),
+              intl.formatMessage({ id: `roster.department.${r.department}` }) +
+              intl.formatMessage({ id: `roster.position.${r.position}` }),
             // department: <FormattedMessage id={`roster.department.${r.department}`}/>,
             // position: <FormattedMessage id={`roster.position.${r.position}`}/>
           };
         })}
         options={{
           density: true,
-          reload: () => dispatch({
-            type: 'roster/getRosters',
-          }),
+          reload: () =>
+            dispatch({
+              type: 'roster/getRosters',
+            }),
           fullScreen: true,
           setting: true,
         }}
@@ -316,7 +332,7 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
       />
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
-          onSubmit={async value => {
+          onSubmit={async (value) => {
             const success = await handleUpdate(dispatch, stepFormValues.id, value);
 
             if (success) {
@@ -342,7 +358,7 @@ const TableList: React.FC<StateType> = ({positionList, dispatch, roster, intl, i
   );
 };
 
-export default connect(({roster, loading, upload}: ConnectState) => ({
+export default connect(({ roster, loading, upload }: ConnectState) => ({
   positionList: roster.positionList,
   roster: roster.roster.length > 0 ? roster.roster : upload.roster,
   removeStatus: roster.removeMemberStatus,
