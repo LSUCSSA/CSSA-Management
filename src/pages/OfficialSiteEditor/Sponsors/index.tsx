@@ -153,7 +153,7 @@ const Sponsors = ({sponsorsList, onChange, isLoading}) => {
 
   }, [row, col]);
   // const onRemove = a
-  const props = () => {
+  const props = (index) => {
     return {
       name: 'files',
       multiple: false,
@@ -163,34 +163,35 @@ const Sponsors = ({sponsorsList, onChange, isLoading}) => {
       headers: {
         Authorization: `Bearer ${token.get()}`,
       },
-      // async onChange(info) {
-      //   const {status} = info.file;
-      //
-      //   if (status === 'uploading') {
-      //   }
-      //   if (status === 'done') {
-      //     message.success(`${info.file.name} file uploaded successfully.`);
-      //     const imageUrl = `/api${info.file.response[0].url}`;
-      //     // setCurrImg()
-      //     setFileData({
-      //       prevState: fileData.currState,
-      //       currState: fileData.currState.map((val, i) => {
-      //         if (i === id) {
-      //           return {...val, imageComp: imageUrl}
-      //         }
-      //         return val
-      //       })
-      //     });
-      //
-      //   } else if (status === 'error') {
-      //     message.error(`${info.file.name} file upload failed.`);
-      //   }
-      // },
-      async beforeUpload(file) {
-        setCurrImg(await getBase64(file));
-        setModalVisible(true);
-        return false
-      }
+      async onChange(info) {
+        const {status} = info.file;
+        console.log(info)
+
+        if (status === 'uploading') {
+        }
+        if (status === 'done') {
+          message.success(`${info.file.name} file uploaded successfully.`);
+          const imageUrl = `/api${info.file.response[0].url}`;
+          // setCurrImg()
+          setFileData({
+            prevState: fileData.currState,
+            currState: fileData.currState.map((val, i) => {
+              if (i === index) {
+                return {...val, imageComp: imageUrl}
+              }
+              return val
+            })
+          });
+
+        } else if (status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+        }
+      },
+      // async beforeUpload(file) {
+      //   setCurrImg(await getBase64(file));
+      //   setModalVisible(true);
+      //   return false
+      // }
       // onRemove:
     }
   };
@@ -277,7 +278,7 @@ const Sponsors = ({sponsorsList, onChange, isLoading}) => {
               <img src={item.imageComp} alt="sponsor" style={{width: '100%', height: "100%"}}/>
               <DeleteOutlined style={{fontSize: 32}} className={styles.uploadedImgIcon}/>
             </>
-            : <Dragger {...props}>
+            : <Dragger {...props(index)}>
               <p className="ant-upload-drag-icon">
                 <InboxOutlined/>
               </p>

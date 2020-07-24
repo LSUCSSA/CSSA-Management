@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function getSponsorComp() {
-  return request(`/api/getSponsorComp`, {
+  return request(`/api/sponsors`, {
     method: 'GET',
     // data: params,
   });

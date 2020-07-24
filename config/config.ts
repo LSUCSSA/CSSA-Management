@@ -145,6 +145,7 @@ export default defineConfig({
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
-  }, // base: '/management/',
-  // publicPath: '/management/',
+  },
+  base: '/management/',
+  publicPath: '/management/',
 });

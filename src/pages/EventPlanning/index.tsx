@@ -1,17 +1,21 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
 import { Spin } from 'antd';
-import styles from './index.less';
 import Board from 'react-trello';
+import styles from './index.less';
 import data from './mock';
 
 export default () => {
-  const shouldReceiveNewData = () => {};
+  const shouldReceiveNewData = (data) => {
+    console.log(data);
+  };
   return (
     <PageHeaderWrapper className={styles.main}>
       <Board
         data={data}
         draggable
+        canAddLanes
+        editLaneTitle
         id="EditableBoard1"
         onDataChange={shouldReceiveNewData}
         // onCardDelete={handleCardDelete}
