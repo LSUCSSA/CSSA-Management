@@ -1,0 +1,87 @@
+@import "./variables.less";
+
+.card {
+  position: relative;
+  box-sizing: border-box;
+  margin: 8px 5px 0 5px;
+  border-radius: 3px;
+  background: white;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  overflow-wrap: break-word;
+  transition: box-shadow 0.15s;
+  user-select: none;
+  cursor: pointer !important;
+
+}
+.card_title {
+  padding: 3px 6px 0px 6px;
+  color: black;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 8px 0;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  p {
+    margin: 4px 0;
+  }
+
+  code,
+  pre {
+    white-space: pre-wrap;
+  }
+  pre {
+    margin: 4px 0;
+    padding: 4px 2px;
+    background: rgba(100, 100, 100, 0.08);
+  }
+}
+
+.card_title:focus {
+  box-shadow: 0px 0px 1px 3px rgb(0, 180, 255);
+}
+
+.card_title__drag {
+  box-shadow: 1px 9px 8px 1px rgba(0, 0, 0, 0.3) !important;
+  opacity: 1 !important;
+}
+
+.card_body_html {
+  padding: 0px 6px 6px 6px;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 8px 0;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  p {
+    margin: 4px 0;
+  }
+
+  code,
+  pre {
+    white-space: pre-wrap;
+  }
+  pre {
+    margin: 4px 0;
+    padding: 4px 2px;
+    background: rgba(100, 100, 100, 0.08);
+  }
+}

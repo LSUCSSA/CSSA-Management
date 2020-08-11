@@ -1,15 +1,43 @@
 {
   "lanes": [
     {
-      "id": "PLANNED",
-      "title": "Planned Tasks",
-      "style": { "width": 280 },
+      "id": "GOAL",
+      "title": "目标",
+      "style": {
+        "width": 280
+      },
+      "cards": [
+        {
+          "id": "Card1",
+          "name": "John Smith",
+          "dueOn": "due in a day",
+          "subTitle": "SMS received at 12:13pm today",
+          "body": "### Add a checklist For a task that has many sub-tasks, you can create a checklist with markdown. [x] Like this [ ] Click me"
+        }
+      ]
+    },
+    {
+      "id": "TODO",
+      "title": "代办",
+      "style": {
+        "width": 280
+      },
       "cards": []
     },
     {
       "id": "WIP",
-      "title": "Work In Progress",
-      "style": { "width": 280 },
+      "title": "进行中",
+      "style": {
+        "width": 280
+      },
+      "cards": []
+    },
+    {
+      "id": "DONE",
+      "title": "完成",
+      "style": {
+        "width": 280
+      },
       "cards": []
     }
   ]

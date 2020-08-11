@@ -2,7 +2,7 @@
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
-const { REACT_APP_ENV } = process.env;
+const { REACT_APP_ENV, SERVER_URL } = process.env;
 export default defineConfig({
   hash: true,
   antd: {},
@@ -21,6 +21,10 @@ export default defineConfig({
   },
   targets: {
     ie: 11,
+  },
+  define: {
+    REACT_APP_ENV: REACT_APP_ENV || '',
+    SERVER_URL: SERVER_URL,
   },
   // umi routes: https://umijs.org/docs/routing
   routes: [
@@ -101,19 +105,19 @@ export default defineConfig({
               component: './Roster',
             },
             {
-              name: '新闻媒体部',
+              name: 'Media',
               icon: 'smile',
               path: '/media',
               component: './NewsMedia',
             },
             {
-              name: '活动策划部',
+              name: 'EventPlanning',
               icon: 'smile',
               path: '/eventplanning',
               component: './EventPlanning',
               routes: [
                 {
-                  name: '任务目标看板',
+                  name: 'Kanban',
                   icon: 'smile',
                   path: '/eventplanning/kanban',
                   component: './EventPlanning',

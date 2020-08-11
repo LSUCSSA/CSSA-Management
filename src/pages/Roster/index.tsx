@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 import { connect } from 'umi';
-import { StateType } from '@/models/roster';
+import { StateType } from '@/pages/Roster/models/roster';
 import { ConnectState } from '@/models/connect';
 import { injectIntl } from 'react-intl';
 import { addMember, removeMember, removeMembers } from '@/services/roster';

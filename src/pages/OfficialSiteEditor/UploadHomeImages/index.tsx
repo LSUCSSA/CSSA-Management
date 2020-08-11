@@ -20,22 +20,23 @@ class PicturesWall extends React.Component {
   state = {
     previewVisible: false,
     previewImage: '',
-    fileList: [],
+    fileList: this.props.slideList,
     isLoading: false,
   };
 
   componentDidUpdate(prevProps) {
     if (this.props.slideList !== prevProps.slideList) {
-      this.setState({
-        fileList: this.props.slideList.map((s, i) => ({
-          uid: -i,
-          id: s.id,
-          name: s.name,
-          url: `/api/${s.url}`,
-          status: s.status,
-          formats: s.formats,
-        })),
-      });
+      this.setState({fileList: this.props.slideList})
+      // this.setState({
+      //   fileList: this.props.slideList.map((s, i) => ({
+      //     uid: -i,
+      //     id: s.id,
+      //     name: s.name,
+      //     url: `/api/${s.url}`,
+      //     status: s.status,
+      //     formats: s.formats,
+      //   })),
+      // });
     }
   }
 
@@ -60,6 +61,7 @@ class PicturesWall extends React.Component {
   render() {
     const { previewVisible, previewImage, fileList } = this.state;
     const { upload, slideList, isLoading, getImages } = this.props;
+    console.log(this.props)
     // if (!isLoading && slideList.length !== 0) {
     //   this.setState({
     //     fileList: slideList.map((s, i) => ({
@@ -118,6 +120,7 @@ class PicturesWall extends React.Component {
                 'data',
                 JSON.stringify({ slider: [...fileList.map((f) => f.id), image[0].id] }),
               );
+              // this.setState({fileList: [...fileList, file.originFileObj]})
               await upload(sliderForm);
               // onSuccess(slideList, file);
             } catch (e) {
