@@ -1,11 +1,11 @@
-import {getKanbanData, setKanbanData} from '@/services/eventPlanning';
+import { getKanbanData, setKanbanData } from '@/services/eventPlanning';
 
-import {Effect, Reducer} from 'umi';
+import { Effect, Reducer } from 'umi';
 
 export interface EventPlanningCompType {
-  board: object,
-  currentBoardId: string,
-  eventBus: null | Function
+  board: object;
+  isSocket: boolean;
+  // currentBoardId: string,
 }
 
 export interface EventPlanningModelType {
@@ -28,43 +28,32 @@ const eventPlanningModel: EventPlanningModelType = {
   namespace: 'eventPlanning',
   state: {
     board: {},
-    currentBoardId: '',
-    eventBus: null,
+    isSocket: false,
+    // currentBoardId: '',
   },
   effects: {
-    * getKanban(_, {call, put}) {
+    *getKanban(_, { call, put }) {
       const response = yield call(getKanbanData);
       yield put({
         type: 'setKanbanData',
         payload: response,
       });
     },
-    * setKanban({payload}, {call, put}) {
+    *setKanban({ payload }, { call, put }) {
       let response;
-      if(!payload.isSocket){
+      if (!payload.isSocket) {
         response = yield call(setKanbanData, payload);
+        response = { ...response, isSocket: payload.isSocket };
       }
       yield put({
         type: 'setKanbanData',
         payload: response || payload,
       });
     },
-    * eventBus({payload}, {call, put}) {
-      yield put({
-        type: 'setEventBus',
-        payload,
-      });
-    },
   },
   reducers: {
-    setKanbanData(state: EventPlanningCompType, {payload, type}) {
-      return {...state, board: payload.kanbanData, type};
-    },
-    setBoardId(state: EventPlanningCompType, {payload, type}) {
-      return {...state, currentBoardId: payload.boardId, type};
-    },
-    setEventBus(state: EventPlanningCompType, {payload, type}) {
-      return {...state, eventBus: payload, type};
+    setKanbanData(state: EventPlanningCompType, { payload, type }) {
+      return { ...state, board: payload.kanbanData, isSocket: payload.isSocket, type };
     },
   },
 };
