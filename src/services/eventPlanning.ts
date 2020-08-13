@@ -8,6 +8,6 @@ export async function getKanbanData() {
 export async function setKanbanData(params) {
   return request(`/api/event-kanban`, {
     method: 'PUT',
-    data: params
+    data: params,
   });
 }

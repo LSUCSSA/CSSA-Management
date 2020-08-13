@@ -72,11 +72,11 @@ const CardModal = ({
   const submitCard = () => {
     if (newDescription !== description) {
       const newData = updateCard(data, laneId, { id, description: newDescription });
-      dispatch(newData, false);
+      dispatch(newData);
       // eventBus.publish({type: 'UPDATE_CARD', landId, card:{id, title, Description: newDescription}})
     } else if (newTitle !== title) {
       const newData = updateCard(data, laneId, { id, title: newTitle });
-      dispatch(newData, false);
+      dispatch(newData);
     }
     toggleCardEditor();
   };

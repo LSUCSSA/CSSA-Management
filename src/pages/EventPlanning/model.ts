@@ -36,14 +36,14 @@ const eventPlanningModel: EventPlanningModelType = {
       const response = yield call(getKanbanData);
       yield put({
         type: 'setKanbanData',
-        payload: response,
+        payload: {...response, shouldUpdate: false},
       });
     },
     *setKanban({ payload }, { call, put }) {
+      console.log(payload);
       let response;
-      if (!payload.isSocket) {
+      if (payload.shouldUpdate) {
         response = yield call(setKanbanData, payload);
-        response = { ...response, isSocket: payload.isSocket };
       }
       yield put({
         type: 'setKanbanData',
@@ -53,7 +53,7 @@ const eventPlanningModel: EventPlanningModelType = {
   },
   reducers: {
     setKanbanData(state: EventPlanningCompType, { payload, type }) {
-      return { ...state, board: payload.kanbanData, isSocket: payload.isSocket, type };
+      return {...state, board: payload.kanbanData, shouldUpdate: payload.shouldUpdate, type};
     },
   },
 };

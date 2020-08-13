@@ -12,13 +12,13 @@ import BoardContext from './KanbanBoard/context';
 
 // import Header from "@/pages/EventPlanning/KanbanBoard/Header";
 const socket = io(`${SERVER_URL}/cssa`);
-const EventPlanning = ({ dispatch, board, isSocket }) => {
+const EventPlanning = ({dispatch, board, shouldUpdate}) => {
+  console.log(shouldUpdate);
   const [eventBus, setEventBus] = useState();
-  const [shouldUpdate, setUpdate] = useState(true);
-  const setKanbanDispatch = (data, socket) =>
+  const setKanbanDispatch = (data, shouldUpdate) =>
     dispatch({
-      type: 'eventPlanning/setKanbangit',
-      payload: { kanbanData: data, isSocket: socket },
+      type: 'eventPlanning/setKanban',
+      payload: {kanbanData: data, shouldUpdate},
     });
   useEffect(() => {
     dispatch({
@@ -30,21 +30,18 @@ const EventPlanning = ({ dispatch, board, isSocket }) => {
       socket.on('newKanbanData', (data) => {
         // console.log(data);
         console.log(socket.id);
-        setUpdate(false);
-        setKanbanDispatch(JSON.parse(data), true);
+        // setUpdate(false);
+        setKanbanDispatch(JSON.parse(data), false);
       });
     });
     // return socket.disconnect()
   }, []);
 
   const shouldReceiveNewData = (data) => {
-    if (!shouldUpdate) {
-      setUpdate(true);
-    } else {
-      setKanbanDispatch(data, false);
-    }
+    console.log(data);
+    if (!shouldUpdate) return;
+    setKanbanDispatch(data, true);
   };
-  console.log(shouldUpdate);
   // if(eventBus){
   //   eventBus.publish({type: 'ADD_CARD', laneId: 'GOAL', card: {id: "M1", title: "Buy Milk", label: "15 mins", body: "Also set reminder"}})
   // }
@@ -75,5 +72,5 @@ const EventPlanning = ({ dispatch, board, isSocket }) => {
 
 export default connect(({ eventPlanning }) => ({
   board: eventPlanning.board,
-  isSocket: eventPlanning.isSocket,
+  shouldUpdate: eventPlanning.shouldUpdate,
 }))(EventPlanning);

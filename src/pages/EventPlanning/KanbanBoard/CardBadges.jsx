@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import {format, differenceInCalendarDays} from "date-fns";
-import {MdAccessAlarm} from "react-icons/md";
-import {FaCheckSquare} from "react-icons/fa";
-import "./CardBadges.less";
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {format, differenceInCalendarDays} from 'date-fns';
+import {MdAccessAlarm} from 'react-icons/md';
+import {FaCheckSquare} from 'react-icons/fa';
+import './CardBadges.less';
 
 class CardBadges extends Component {
   static propTypes = {
     date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
     checkboxes: PropTypes.shape({
       total: PropTypes.number.isRequired,
-      checked: PropTypes.number.isRequired
-    }).isRequired
+      checked: PropTypes.number.isRequired,
+    }).isRequired,
   };
 
   renderDueDate = () => {
@@ -25,27 +25,28 @@ class CardBadges extends Component {
     if (dueDateFromToday < -1) {
       dueDateString = `${Math.abs(dueDateFromToday)} 天前`;
     } else if (dueDateFromToday === -1) {
-      dueDateString = "昨天";
+      dueDateString = '昨天';
     } else if (dueDateFromToday === 0) {
-      dueDateString = "今天";
+      dueDateString = '今天';
     } else if (dueDateFromToday === 1) {
-      dueDateString = "明天";
+      dueDateString = '明天';
     } else {
-      dueDateString = format(date, "D MMM");
+      dueDateString = format(date, 'D MMM');
     }
 
     let dueDateColor;
     if (dueDateFromToday < 0) {
-      dueDateColor = "red";
+      dueDateColor = 'red';
     } else if (dueDateFromToday === 0) {
-      dueDateColor = "#d60";
+      dueDateColor = '#d60';
     } else {
-      dueDateColor = "green";
+      dueDateColor = 'green';
     }
 
     return (
-      <div className="badge" style={{ background: dueDateColor }}>
-        <MdAccessAlarm className="badge-icon" />&nbsp;
+      <div className="badge" style={{background: dueDateColor}}>
+        <MdAccessAlarm className="badge-icon"/>
+        &nbsp;
         {dueDateString}
       </div>
     );
@@ -58,11 +59,9 @@ class CardBadges extends Component {
       return null;
     }
     return (
-      <div
-        className="badge"
-        style={{ background: checked === total ? "green" : "#444" }}
-      >
-        <FaCheckSquare className="badge-icon" />&nbsp;
+      <div className="badge" style={{background: checked === total ? 'green' : '#444'}}>
+        <FaCheckSquare className="badge-icon"/>
+        &nbsp;
         {checked}/{total}
       </div>
     );

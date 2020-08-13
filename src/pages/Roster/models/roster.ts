@@ -1,25 +1,25 @@
 import {getPositionList, getRoster, removeMembers, updateMember} from '@/services/roster';
-import {Effect, Reducer} from "umi";
+import {Effect, Reducer} from 'umi';
 
 export interface MemberType {
-  confirmed: boolean,
-  blocked: boolean,
-  position: string,
-  department: string,
-  points: number,
-  name: string,
-  username: string,
-  email: string,
-  provider: string,
+  confirmed: boolean;
+  blocked: boolean;
+  position: string;
+  department: string;
+  points: number;
+  name: string;
+  username: string;
+  email: string;
+  provider: string;
 }
 
 export interface StateType {
   positionList: {
     position: Array<string>;
     department: Array<string>;
-  },
-  roster: Array<MemberType>
-  removeMemberStatus: boolean
+  };
+  roster: Array<MemberType>;
+  removeMemberStatus: boolean;
 }
 export interface RosterModelType {
   namespace: string;
@@ -41,7 +41,7 @@ const rosterModel: RosterModelType = {
   state: {
     positionList: {
       position: [],
-      department: []
+      department: [],
     },
     roster: [],
     removeMemberStatus: false,
@@ -61,16 +61,16 @@ const rosterModel: RosterModelType = {
         payload: response,
       });
     },
-    * removeMembers({ payload },{call,put}){
+    * removeMembers({payload}, {call, put}) {
       const response = yield call(removeMembers, payload);
       yield put({
         type: 'setRemoveMemberStatus',
-        payload: response
-      })
+        payload: response,
+      });
     },
-    *updateMember({ payload }, {call}){
+    * updateMember({payload}, {call}) {
       yield call(updateMember, payload.id, {...payload});
-    }
+    },
   },
   reducers: {
     setPositionList(state: StateType, {payload, type}) {
@@ -79,9 +79,9 @@ const rosterModel: RosterModelType = {
     setRoster(state: StateType, {payload, type}) {
       return {...state, roster: payload, type};
     },
-    setRemoveMemberStatus(state: StateType, {payload, type}){
+    setRemoveMemberStatus(state: StateType, {payload, type}) {
       return {...state, removeMemberStatus: payload, type};
-    }
+    },
   },
 };
 export default rosterModel;

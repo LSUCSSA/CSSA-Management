@@ -26,7 +26,7 @@ class PicturesWall extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.slideList !== prevProps.slideList) {
-      this.setState({fileList: this.props.slideList})
+      this.setState({fileList: this.props.slideList});
       // this.setState({
       //   fileList: this.props.slideList.map((s, i) => ({
       //     uid: -i,
@@ -61,7 +61,7 @@ class PicturesWall extends React.Component {
   render() {
     const { previewVisible, previewImage, fileList } = this.state;
     const { upload, slideList, isLoading, getImages } = this.props;
-    console.log(this.props)
+    console.log(this.props);
     // if (!isLoading && slideList.length !== 0) {
     //   this.setState({
     //     fileList: slideList.map((s, i) => ({

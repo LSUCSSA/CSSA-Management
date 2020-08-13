@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import DayPicker from "react-day-picker";
-import "./ReactDayPicker.css";
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import DayPicker from 'react-day-picker';
+import './ReactDayPicker.css';
 
 class Calendar extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     cardId: PropTypes.string.isRequired,
     date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
-    toggleCalendar: PropTypes.func.isRequired
+    toggleCalendar: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      selectedDay: props.date ? new Date(props.date) : undefined
+      selectedDay: props.date ? new Date(props.date) : undefined,
     };
   }
 
@@ -34,8 +34,8 @@ class Calendar extends Component {
     const { selectedDay } = this.state;
     const { dispatch, cardId, toggleCalendar } = this.props;
     dispatch({
-      type: "CHANGE_CARD_DATE",
-      payload: { date: selectedDay, cardId }
+      type: 'CHANGE_CARD_DATE',
+      payload: {date: selectedDay, cardId},
     });
     toggleCalendar();
   };
