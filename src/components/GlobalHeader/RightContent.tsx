@@ -7,6 +7,7 @@ import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
+import NoticeIconView from "@/components/GlobalHeader/NoticeIconView";
 
 export type SiderTheme = 'light' | 'dark';
 export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
@@ -53,6 +54,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
         //   //console.log('input', value);
         // }}
       />
+      <NoticeIconView />
       <Avatar />
       {REACT_APP_ENV && (
         <span>

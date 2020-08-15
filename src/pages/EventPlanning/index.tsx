@@ -13,8 +13,8 @@ import BoardContext from './KanbanBoard/context';
 // import Header from "@/pages/EventPlanning/KanbanBoard/Header";
 const socket = io(`${SERVER_URL}/cssa`);
 const EventPlanning = ({dispatch, board, shouldUpdate}) => {
-  console.log(shouldUpdate);
   const [eventBus, setEventBus] = useState();
+  const [firstDataChange, setDataChange] = useState(true);
   const setKanbanDispatch = (data, shouldUpdate) =>
     dispatch({
       type: 'eventPlanning/setKanban',
@@ -38,9 +38,12 @@ const EventPlanning = ({dispatch, board, shouldUpdate}) => {
   }, []);
 
   const shouldReceiveNewData = (data) => {
-    console.log(data);
-    if (!shouldUpdate) return;
-    setKanbanDispatch(data, true);
+    // if(!firstDataChange && shouldUpdate){
+    //   console.log("request")
+    //   setKanbanDispatch(data, true);
+    // }
+    // setDataChange(false)
+
   };
   // if(eventBus){
   //   eventBus.publish({type: 'ADD_CARD', laneId: 'GOAL', card: {id: "M1", title: "Buy Milk", label: "15 mins", body: "Also set reminder"}})
