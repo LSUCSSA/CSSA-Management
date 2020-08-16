@@ -13,17 +13,20 @@ export interface NoticeItem extends NoticeIconData {
 export interface GlobalModelState {
   collapsed: boolean;
   notices: NoticeItem[];
+  socket: object;
 }
 
 export interface GlobalModelType {
   namespace: 'global';
   state: GlobalModelState;
   effects: {
+    setSocket: Effect;
     fetchNotices: Effect;
     clearNotices: Effect;
     changeNoticeReadState: Effect;
   };
   reducers: {
+    setSocketObj: Reducer<GlobalModelState>;
     changeLayoutCollapsed: Reducer<GlobalModelState>;
     saveNotices: Reducer<GlobalModelState>;
     saveClearedNotices: Reducer<GlobalModelState>;
@@ -37,10 +40,17 @@ const GlobalModel: GlobalModelType = {
   state: {
     collapsed: false,
     notices: [],
+    socket: {}
   },
 
   effects: {
-    *fetchNotices(_, { call, put, select }) {
+    * setSocket({payload}, {put, takeLatest}) {
+      yield takeLatest({
+        type: 'setSocketObj',
+        payload,
+      });
+    },
+    * fetchNotices(_, {call, put, select}) {
       const data = yield call(queryNotices);
       yield put({
         type: 'saveNotices',
@@ -101,20 +111,26 @@ const GlobalModel: GlobalModelType = {
   },
 
   reducers: {
-    changeLayoutCollapsed(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    setSocketObj(state = {notices: [], collapsed: true, socket: {}}, {payload}): GlobalModelState {
+      return {
+        ...state,
+        socket: payload,
+      };
+    },
+    changeLayoutCollapsed(state = {notices: [], collapsed: true, socket: {}}, {payload}): GlobalModelState {
       return {
         ...state,
         collapsed: payload,
       };
     },
-    saveNotices(state, { payload }): GlobalModelState {
+    saveNotices(state = {notices: [], collapsed: true, socket: {}}, {payload}): GlobalModelState {
       return {
         collapsed: false,
         ...state,
         notices: payload,
       };
     },
-    saveClearedNotices(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    saveClearedNotices(state = {notices: [], collapsed: true, socket: {}}, {payload}): GlobalModelState {
       return {
         ...state,
         collapsed: false,

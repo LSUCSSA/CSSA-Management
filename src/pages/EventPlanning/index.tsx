@@ -12,7 +12,7 @@ import BoardContext from './KanbanBoard/context';
 
 // import Header from "@/pages/EventPlanning/KanbanBoard/Header";
 const socket = io(`${SERVER_URL}/cssa`);
-const EventPlanning = ({dispatch, board, shouldUpdate}) => {
+const EventPlanning = ({currentUser, dispatch, board, shouldUpdate}) => {
   const [eventBus, setEventBus] = useState();
   const [firstDataChange, setDataChange] = useState(true);
   const setKanbanDispatch = (data, shouldUpdate) =>
@@ -27,6 +27,7 @@ const EventPlanning = ({dispatch, board, shouldUpdate}) => {
   }, []);
   useEffect(() => {
     socket.on('connect', () => {
+      console.log(socket.id)
       socket.on('newKanbanData', (data) => {
         // console.log(data);
         console.log(socket.id);
@@ -73,7 +74,8 @@ const EventPlanning = ({dispatch, board, shouldUpdate}) => {
   return <Spin spinning={Object.keys(board).length === 0} />;
 };
 
-export default connect(({ eventPlanning }) => ({
+export default connect(({eventPlanning, user}) => ({
   board: eventPlanning.board,
   shouldUpdate: eventPlanning.shouldUpdate,
+  currentUser: user.currentUser
 }))(EventPlanning);
