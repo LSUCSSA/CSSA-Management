@@ -29,7 +29,7 @@ const handleAdd = async (fields: TableListItem) => {
       email: fields.email,
       department: fields.department,
       position: fields.position,
-      score: fields.score,
+      points: fields.points,
     });
     hide();
     message.success('添加成功');
@@ -115,16 +115,23 @@ const TableList: React.FC<StateType> = ({
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
+
+  const updatePoint = (payload)=>{
+    dispatch({
+      type: 'roster/updatePoints',
+      payload,
+    })
+  };
   // TODO add action to add points
-  const addPoints = (
+  const addPoints =(id, points)=> (
     <div>
-      <Button type="link" size="small">
+      <Button type="link" size="small" onClick={()=>updatePoint({id, currPoint: points, point2Update:1})}>
         +1
       </Button>
-      <Button type="link" size="small">
+      <Button type="link" size="small" onClick={()=>updatePoint({id, currPoint: points, point2Update:2})}>
         +2
       </Button>
-      <Button type="link" size="small">
+      <Button type="link" size="small" onClick={()=>updatePoint({id, currPoint: points, point2Update:5})}>
         +5
       </Button>
     </div>
@@ -176,7 +183,7 @@ const TableList: React.FC<StateType> = ({
               更改
             </a>
             <Divider type="vertical" />
-            <Popover content={addPoints}>
+            <Popover content={addPoints(record.id, record.points)}>
               <a>加分</a>
             </Popover>
             <Divider type="vertical" />

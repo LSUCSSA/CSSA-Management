@@ -210,6 +210,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           }}
           label="官网照片"
           name="publicPhoto"
+          valuePropName="fileList"
         >
           <Upload
             name="files"
@@ -276,7 +277,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         }}
         onFinish={handleSubmit}
         onValuesChange={(_, allVal) => {
-          form.setFieldsValue({...allVal, publicPhoto: allVal.publicPhoto.fileList})
+          console.log(allVal)
+          setFormVals(allVal);
+          // form.setFieldsValue({...allVal, publicPhoto: allVal.publicPhoto.fileList})
         }}
       >
         {renderContent()}

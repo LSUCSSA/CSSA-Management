@@ -35,3 +35,9 @@ export async function removeMember(id: string ) {
     method: 'DELETE',
   });
 }
+export async function updatePoint(id: string, param:object ) {
+  return request(`/api/users/${id}`, {
+    method: 'PUT',
+    data: {points: param.currPoint + param.point2Update}
+  });
+}

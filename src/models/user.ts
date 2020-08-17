@@ -1,6 +1,7 @@
 import { Effect, Reducer } from 'umi';
 
 import { queryCurrent, query as queryUsers } from '@/services/user';
+import {StateType} from "@/pages/Roster/models/roster";
 
 export interface CurrentUser {
   avatar?: string;
@@ -28,6 +29,7 @@ export interface UserModelType {
     fetchCurrent: Effect;
   };
   reducers: {
+    setPoints: Reducer<UserModelState>;
     saveCurrentUser: Reducer<UserModelState>;
     changeNotifyCount: Reducer<UserModelState>;
   };
@@ -58,6 +60,10 @@ const UserModel: UserModelType = {
   },
 
   reducers: {
+    setPoints(state: StateType, {payload, type}) {
+      console.log(payload)
+      return {...state, currentUser: {...state.currentUser, points: payload}, type};
+    },
     saveCurrentUser(state, action) {
       return {
         ...state,

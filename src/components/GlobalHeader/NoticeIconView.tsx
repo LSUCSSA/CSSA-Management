@@ -26,6 +26,7 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
         type: 'global/fetchNotices',
       });
     }
+
   }
 
   changeReadState = (clickedItem: NoticeItem): void => {
@@ -37,7 +38,9 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
         type: 'global/changeNoticeReadState',
         payload: id,
       });
+
     }
+
   };
 
   handleNoticeClear = (title: string, key: string) => {

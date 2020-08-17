@@ -81,4 +81,4 @@ export default connect(({ editor, loading }) => ({
   slideList: editor.slideList,
   isSponsorLoading: loading.effects['editor/getSponsorList'],
   isSlideLoading: loading.effects['editor/getHomeSlide'],
-}))(injectIntl(Editor));
+}))(injectIntl(React.memo(Editor)));

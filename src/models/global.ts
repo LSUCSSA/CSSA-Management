@@ -1,8 +1,8 @@
-import { Subscription, Reducer, Effect } from 'umi';
+import {Subscription, Reducer, Effect} from 'umi';
 
-import { NoticeIconData } from '@/components/NoticeIcon';
-import { queryNotices } from '@/services/user';
-import { ConnectState } from './connect.d';
+import {NoticeIconData} from '@/components/NoticeIcon';
+import {queryNotices} from '@/services/user';
+import {ConnectState} from './connect.d';
 
 export interface NoticeItem extends NoticeIconData {
   id: string;
@@ -21,6 +21,7 @@ export interface GlobalModelType {
   state: GlobalModelState;
   effects: {
     setSocket: Effect;
+    appendSocketNotices: Effect;
     fetchNotices: Effect;
     clearNotices: Effect;
     changeNoticeReadState: Effect;
@@ -29,6 +30,7 @@ export interface GlobalModelType {
     setSocketObj: Reducer<GlobalModelState>;
     changeLayoutCollapsed: Reducer<GlobalModelState>;
     saveNotices: Reducer<GlobalModelState>;
+    appendNotices: Reducer<GlobalModelState>;
     saveClearedNotices: Reducer<GlobalModelState>;
   };
   subscriptions: { setup: Subscription };
@@ -44,14 +46,36 @@ const GlobalModel: GlobalModelType = {
   },
 
   effects: {
-    * setSocket({payload}, {put, takeLatest}) {
-      yield takeLatest({
+    * setSocket({payload}, {put}) {
+      yield put({
         type: 'setSocketObj',
         payload,
       });
     },
+    * appendSocketNotices({payload}, {put, select}) {
+      yield put({
+        type: 'appendNotices',
+        payload,
+      });
+      const totalCount: number = yield select(
+        (state: ConnectState) => state.global.notices.length,
+      );
+      const unreadCount: number = yield select(
+        (state: ConnectState) => state.global.notices.filter((item) => !item.read).length,
+      );
+      yield put({
+        type: 'user/changeNotifyCount',
+        payload: {
+          totalCount,
+          unreadCount,
+        },
+      });
+    },
     * fetchNotices(_, {call, put, select}) {
-      const data = yield call(queryNotices);
+      const uid: string = yield select(
+        (state: ConnectState) => state.user.currentUser.id,
+      );
+      const data = yield call(queryNotices, uid);
       yield put({
         type: 'saveNotices',
         payload: data,
@@ -67,7 +91,7 @@ const GlobalModel: GlobalModelType = {
         },
       });
     },
-    *clearNotices({ payload }, { put, select }) {
+    * clearNotices({payload}, {put, select}) {
       yield put({
         type: 'saveClearedNotices',
         payload,
@@ -84,10 +108,10 @@ const GlobalModel: GlobalModelType = {
         },
       });
     },
-    *changeNoticeReadState({ payload }, { put, select }) {
+    * changeNoticeReadState({payload}, {put, select}) {
       const notices: NoticeItem[] = yield select((state: ConnectState) =>
         state.global.notices.map((item) => {
-          const notice = { ...item };
+          const notice = {...item};
           if (notice.id === payload) {
             notice.read = true;
           }
@@ -117,20 +141,27 @@ const GlobalModel: GlobalModelType = {
         socket: payload,
       };
     },
-    changeLayoutCollapsed(state = {notices: [], collapsed: true, socket: {}}, {payload}): GlobalModelState {
+    changeLayoutCollapsed(state = {notices: [], collapsed: true}, {payload}): GlobalModelState {
       return {
         ...state,
         collapsed: payload,
       };
     },
-    saveNotices(state = {notices: [], collapsed: true, socket: {}}, {payload}): GlobalModelState {
+    saveNotices(state = {notices: [], collapsed: true}, {payload}): GlobalModelState {
       return {
         collapsed: false,
         ...state,
         notices: payload,
       };
     },
-    saveClearedNotices(state = {notices: [], collapsed: true, socket: {}}, {payload}): GlobalModelState {
+    appendNotices(state = {notices: [], collapsed: true}, {payload}): GlobalModelState {
+      return {
+        collapsed: false,
+        ...state,
+        notices: [...state.notices, payload],
+      };
+    },
+    saveClearedNotices(state = {notices: [], collapsed: true}, {payload}): GlobalModelState {
       return {
         ...state,
         collapsed: false,
@@ -140,9 +171,9 @@ const GlobalModel: GlobalModelType = {
   },
 
   subscriptions: {
-    setup({ history }): void {
+    setup({history}): void {
       // Subscribe history(url) change, trigger `load` action if pathname is `/`
-      history.listen(({ pathname, search }): void => {
+      history.listen(({pathname, search}): void => {
         if (typeof window.ga !== 'undefined') {
           window.ga('send', 'pageview', pathname + search);
         }

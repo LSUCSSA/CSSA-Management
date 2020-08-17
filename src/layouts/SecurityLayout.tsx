@@ -5,6 +5,7 @@ import {stringify} from 'querystring';
 import {ConnectState} from '@/models/connect';
 import {CurrentUser} from '@/models/user';
 import io from 'socket.io-client';
+import WebSocket from "@/utils/websocket";
 
 interface SecurityLayoutProps extends ConnectProps {
   loading?: boolean;
@@ -51,12 +52,7 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
     }
     if (isLogin && dispatch) {
       const socket = io(`${SERVER_URL}/cssa`, {query: `userID=${currentUser.id}`});
-      socket.on('connect', () => {
-        dispatch({type: "global/setSocket", payload: socket})
-      });
-      socket.on('disconnect', () => {
-        socket.removeAllListeners();
-      });
+      WebSocket(socket, dispatch);
     }
 
     return children;

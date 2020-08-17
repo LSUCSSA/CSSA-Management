@@ -1,5 +1,6 @@
-import {getPositionList, getRoster, removeMembers, updateMember} from '@/services/roster';
+import {getPositionList, getRoster, removeMembers, updateMember, updatePoint} from '@/services/roster';
 import {Effect, Reducer} from 'umi';
+import {response} from "express";
 
 export interface MemberType {
   confirmed: boolean;
@@ -29,6 +30,7 @@ export interface RosterModelType {
     getRosters: Effect;
     removeMembers: Effect;
     updateMember: Effect;
+    updatePoints: Effect;
   };
   reducers: {
     setPositionList: Reducer<StateType>;
@@ -70,6 +72,13 @@ const rosterModel: RosterModelType = {
     },
     * updateMember({payload}, {call}) {
       yield call(updateMember, payload.id, {...payload});
+    },
+    * updatePoints({payload}, {call, put}) {
+       const response = yield call(updatePoint, payload.id, payload.currPoint, payload.point2Update);
+       yield put({
+         type: 'user/setPoints',
+         payload: response
+       })
     },
   },
   reducers: {
