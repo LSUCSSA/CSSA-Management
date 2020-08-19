@@ -3,7 +3,6 @@ import { Effect, Reducer } from 'umi';
 
 export interface StateType {
   file: undefined | object;
-  roster: Array<object>;
 }
 
 export interface UploadModelType {
@@ -23,21 +22,21 @@ const UploadModel: UploadModelType = {
   namespace: 'upload',
   state: {
     file: undefined,
-    roster: [],
+    // roster: [],
   },
   effects: {
     *uploadRoster({ payload }, { call, put }) {
       const response = yield call(uploadRoster, payload);
       yield put({
-        type: 'setRoster',
+        type: 'roster/setRoster',
         payload: response,
       });
     },
   },
   reducers: {
-    setRoster(state, action) {
-      return { ...state, roster: action.payload };
-    },
+    // setRoster(state, action) {
+    //   return { ...state, roster: action.payload };
+    // },
 
     saveCurrentUser(state, action) {
       return { ...state, currentUser: action.payload || {} };

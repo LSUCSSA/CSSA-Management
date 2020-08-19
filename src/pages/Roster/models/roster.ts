@@ -1,6 +1,5 @@
 import {getPositionList, getRoster, removeMembers, updateMember, updatePoint} from '@/services/roster';
 import {Effect, Reducer} from 'umi';
-import {response} from "express";
 
 export interface MemberType {
   confirmed: boolean;
@@ -22,6 +21,7 @@ export interface StateType {
   roster: Array<MemberType>;
   removeMemberStatus: boolean;
 }
+
 export interface RosterModelType {
   namespace: string;
   state: StateType;
@@ -70,15 +70,28 @@ const rosterModel: RosterModelType = {
         payload: response,
       });
     },
-    * updateMember({payload}, {call}) {
-      yield call(updateMember, payload.id, {...payload});
+    * updateMember({payload}, {put, call, select}) {
+      const response = yield call(updateMember, payload.id, {...payload});
+      const roster = yield select((state) => state.roster.roster);
+      const newRoster = roster.map(member => {if(member.id === payload.id) return {...response}});
+      yield put({
+        type: 'setRoster',
+        payload: newRoster
+      })
+
     },
-    * updatePoints({payload}, {call, put}) {
-       const response = yield call(updatePoint, payload.id, payload.currPoint, payload.point2Update);
-       yield put({
-         type: 'user/setPoints',
-         payload: response
-       })
+    * updatePoints({payload}, {call, put, select}) {
+      const response = yield call(updatePoint, {id: payload.id, currPoint:payload.currPoint, point2Update: payload.point2Update});
+      const roster = yield select((state) => state.roster.roster);
+      const newRoster = roster.map(member => {if(member.id === payload.id) return {...member, points: response.points}});
+      yield put({
+        type: 'setRoster',
+        payload: newRoster
+      })
+      // yield put({
+      //   type: 'user/setPoints',
+      //   payload: response
+      // })
     },
   },
   reducers: {

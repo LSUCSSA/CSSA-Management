@@ -114,8 +114,42 @@ const TableList: React.FC<StateType> = ({
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
+  const [intlRoster, setIntlRoster] = useState(roster);
   const actionRef = useRef<ActionType>();
+  console.log(intlRoster)
 
+  useEffect(()=>{
+    setIntlRoster(roster.map((r, i) => {
+      if (!r.department || !r.position) {
+        return {
+          rowKey: i,
+          ...r,
+          title: '暂无',
+          // department: <FormattedMessage id={`roster.department.${r.department}`}/>,
+          // position: <FormattedMessage id={`roster.position.${r.position}`}/>
+        };
+      }
+      return {
+        rowKey: i,
+        ...r,
+        title:
+          intl.formatMessage({ id: `roster.department.${r.department}` }) +
+          intl.formatMessage({ id: `roster.position.${r.position}` }),
+        // department: <FormattedMessage id={`roster.department.${r.department}`}/>,
+        // position: <FormattedMessage id={`roster.position.${r.position}`}/>
+      };
+    }))
+  },[roster]);
+  useEffect(() => {
+    if (dispatch) {
+      dispatch({
+        type: 'roster/getPositionList',
+      });
+      dispatch({
+        type: 'roster/getRosters',
+      });
+    }
+  }, []);
   const updatePoint = (payload)=>{
     dispatch({
       type: 'roster/updatePoints',
@@ -136,16 +170,7 @@ const TableList: React.FC<StateType> = ({
       </Button>
     </div>
   );
-  useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'roster/getPositionList',
-      });
-      dispatch({
-        type: 'roster/getRosters',
-      });
-    }
-  }, []);
+
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -229,7 +254,7 @@ const TableList: React.FC<StateType> = ({
       <ProTable<TableListItem>
         headerTitle="成员列表"
         actionRef={actionRef}
-        loading={isGetRosterLoading}
+        loading={intlRoster.length === 0 || isGetRosterLoading}
         rowKey="id"
         toolBarRender={(action, { selectedRowKeys }) => [
           <Button icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible(true)}>
@@ -291,26 +316,7 @@ const TableList: React.FC<StateType> = ({
           );
         }}
         // request={async (params = {}) =>  actionRef.current.reload()}
-        dataSource={roster.map((r, i) => {
-          if (!r.department || !r.position) {
-            return {
-              rowKey: i,
-              ...r,
-              title: '暂无',
-              // department: <FormattedMessage id={`roster.department.${r.department}`}/>,
-              // position: <FormattedMessage id={`roster.position.${r.position}`}/>
-            };
-          }
-          return {
-            rowKey: i,
-            ...r,
-            title:
-              intl.formatMessage({ id: `roster.department.${r.department}` }) +
-              intl.formatMessage({ id: `roster.position.${r.position}` }),
-            // department: <FormattedMessage id={`roster.department.${r.department}`}/>,
-            // position: <FormattedMessage id={`roster.position.${r.position}`}/>
-          };
-        })}
+        dataSource={intlRoster}
         options={{
           density: true,
           reload: () =>
@@ -365,9 +371,9 @@ const TableList: React.FC<StateType> = ({
   );
 };
 
-export default connect(({ roster, loading, upload }: ConnectState) => ({
+export default connect(({ roster, loading }: ConnectState) => ({
   positionList: roster.positionList,
-  roster: roster.roster.length > 0 ? roster.roster : upload.roster,
+  roster: roster.roster,
   removeStatus: roster.removeMemberStatus,
   isGetRosterLoading: loading.effects['roster/getRosters'],
   isUploadLoading: loading.effects['roster/updateMember'],
