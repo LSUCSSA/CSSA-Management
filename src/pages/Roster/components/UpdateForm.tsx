@@ -62,13 +62,16 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     publicPhoto: props.values.publicPhoto,
   });
 
-  const [imageUrl, setImageUrl] = useState(`api/${props.values.publicPhoto}`);
+  const [imageUrl, setImageUrl] = useState();
   const [imageFile, setImageFile] = useState();
   // const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
-    setImageUrl(`api/${props.values.publicPhoto}`)
-  },[]);
+  useEffect(() => {
+    if (props.values.publicPhoto) {
+      setImageUrl(`api/${props.values.publicPhoto}`)
+    }
+
+  }, [props.values.publicPhoto]);
 
 
   const [form] = Form.useForm();
@@ -98,7 +101,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       handleUpdate({...formVals, ...fieldsValue, });
     }
   };
-
 
 
   const renderContent = () => {

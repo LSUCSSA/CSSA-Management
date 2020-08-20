@@ -73,7 +73,11 @@ const rosterModel: RosterModelType = {
     * updateMember({payload}, {put, call, select}) {
       const response = yield call(updateMember, payload.id, {...payload});
       const roster = yield select((state) => state.roster.roster);
-      const newRoster = roster.map(member => {if(member.id === payload.id) return {...response}});
+      const newRoster = roster.map(member => {
+        if (member.id === payload.id)
+          return response;
+        return member
+      });
       yield put({
         type: 'setRoster',
         payload: newRoster
@@ -81,9 +85,17 @@ const rosterModel: RosterModelType = {
 
     },
     * updatePoints({payload}, {call, put, select}) {
-      const response = yield call(updatePoint, {id: payload.id, currPoint:payload.currPoint, point2Update: payload.point2Update});
+      const response = yield call(updatePoint, {
+        id: payload.id,
+        currPoint: payload.currPoint,
+        point2Update: payload.point2Update
+      });
       const roster = yield select((state) => state.roster.roster);
-      const newRoster = roster.map(member => {if(member.id === payload.id) return {...member, points: response.points}});
+      const newRoster = roster.map(member => {
+        if (member.id === payload.id)
+          return {...member, points: response.points};
+        return member
+      });
       yield put({
         type: 'setRoster',
         payload: newRoster

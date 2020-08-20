@@ -116,7 +116,6 @@ const TableList: React.FC<StateType> = ({
   const [stepFormValues, setStepFormValues] = useState({});
   const [intlRoster, setIntlRoster] = useState(roster);
   const actionRef = useRef<ActionType>();
-  console.log(intlRoster)
 
   useEffect(()=>{
     setIntlRoster(roster.map((r, i) => {
@@ -150,27 +149,27 @@ const TableList: React.FC<StateType> = ({
       });
     }
   }, []);
-  const updatePoint = (payload)=>{
+  const updatePoint = (payload) => {
     dispatch({
       type: 'roster/updatePoints',
       payload,
     })
   };
-  // TODO add action to add points
-  const addPoints =(id, points)=> (
+  const addPointContent = (updateFunc) => (
     <div>
-      <Button type="link" size="small" onClick={()=>updatePoint({id, currPoint: points, point2Update:1})}>
+      <Button type="link" size="small" onClick={() => updateFunc}>
         +1
       </Button>
-      <Button type="link" size="small" onClick={()=>updatePoint({id, currPoint: points, point2Update:2})}>
+      <Button type="link" size="small" onClick={() => updateFunc}>
         +2
       </Button>
-      <Button type="link" size="small" onClick={()=>updatePoint({id, currPoint: points, point2Update:5})}>
+      <Button type="link" size="small" onClick={() => updateFunc}>
         +5
       </Button>
     </div>
-  );
-
+  )
+  const addPoints = (id, points) => (addPointContent(updatePoint(({id, currPoint: points, point2Update: 1}))));
+  // const bulkAddPoints = (listID) => addPointContent()
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -305,7 +304,7 @@ const TableList: React.FC<StateType> = ({
         }}
         tableAlertOptionRender={(props) => {
           const { onCleanSelected } = props;
-
+          console.log(props)
           return (
             <Space>
               <Popover content={addPoints}>
