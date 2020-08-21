@@ -36,6 +36,7 @@ export async function removeMember(id: string ) {
   });
 }
 export async function updatePoint(param:object ) {
+  console.log(param)
   return request(`/api/users/${param.id}`, {
     method: 'PUT',
     data: {points: param.currPoint + param.point2Update}
