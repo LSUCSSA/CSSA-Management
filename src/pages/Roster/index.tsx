@@ -1,5 +1,5 @@
 import {DownOutlined, PlusOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {Button, Divider, Dropdown, Menu, message, Popover, Space, Modal} from 'antd';
+import {Button, Divider, Dropdown, Menu, message, Popover, Space, Modal, Spin} from 'antd';
 
 import React, {useState, useRef, useEffect} from 'react';
 import {PageHeaderWrapper} from '@ant-design/pro-layout';
@@ -110,6 +110,8 @@ const TableList: React.FC<StateType> = ({
                                           isGetRosterLoading,
                                           isUploadLoading,
                                           removeStatus,
+                                          isBatchUpdatingPoint,
+                                          isUpdatingPoint
                                         }) => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -133,7 +135,7 @@ const TableList: React.FC<StateType> = ({
         rowKey: i,
         ...r,
         title:
-          intl.formatMessage({id: `roster.department.${r.department}`}) +
+          intl.formatMessage({id: `roster.department.${r.department}`}) + '-' +
           intl.formatMessage({id: `roster.position.${r.position}`}),
         // department: <FormattedMessage id={`roster.department.${r.department}`}/>,
         // position: <FormattedMessage id={`roster.position.${r.position}`}/>
@@ -155,23 +157,27 @@ const TableList: React.FC<StateType> = ({
     payload,
   });
   const AddPointContent = (isBatch: boolean, payload: object) => {
-    if(isBatch){
+    if (isBatch) {
+      const batchUpdate = (payload) => dispatch({
+        type: 'roster/batchUpdatePoints',
+        payload,
+      });
       return (
-        <div>
-          <Button type="link" size="small" onClick={() => updatePoint({...payload, point2Update: 1})}>
+        <Spin spinning={isBatchUpdatingPoint}>
+          <Button type="link" size="small" onClick={() => batchUpdate({IDs: payload, point2Update: 1})}>
             +1
           </Button>
-          <Button type="link" size="small" onClick={() => updatePoint({...payload, point2Update: 2})}>
+          <Button type="link" size="small" onClick={() => batchUpdate({IDs: payload, point2Update: 2})}>
             +2
           </Button>
-          <Button type="link" size="small" onClick={() => updatePoint({...payload, point2Update: 5})}>
+          <Button type="link" size="small" onClick={() => batchUpdate({IDs: payload, point2Update: 5})}>
             +5
           </Button>
-        </div>
+        </Spin>
       )
     }
     return (
-      <div>
+      <Spin spinning={isUpdatingPoint}>
         <Button type="link" size="small" onClick={() => updatePoint({...payload, point2Update: 1})}>
           +1
         </Button>
@@ -181,7 +187,7 @@ const TableList: React.FC<StateType> = ({
         <Button type="link" size="small" onClick={() => updatePoint({...payload, point2Update: 5})}>
           +5
         </Button>
-      </div>
+      </Spin>
     )
     }
   ;
@@ -294,7 +300,6 @@ const TableList: React.FC<StateType> = ({
                   selectedKeys={[]}
                 >
                   <Menu.Item key="remove">批量删除</Menu.Item>
-                  <Menu.Item key="approval">批量审批</Menu.Item>
                 </Menu>
               }
             >
@@ -326,9 +331,9 @@ const TableList: React.FC<StateType> = ({
           const {onCleanSelected} = props;
           return (
             <Space>
-              {/*<Popover content={AddPointContent(true, selectedRowKeys)}>*/}
-              {/*  <a>加分</a>*/}
-              {/*</Popover>*/}
+              <Popover content={AddPointContent(true, selectedRowKeys)}>
+                <a>加分</a>
+              </Popover>
               <a onClick={onCleanSelected}>清空</a>
             </Space>
           );
@@ -394,5 +399,7 @@ export default connect(({roster, loading}: ConnectState) => ({
   roster: roster.roster,
   removeStatus: roster.removeMemberStatus,
   isGetRosterLoading: loading.effects['roster/getRosters'],
+  isUpdatingPoint: loading.effects['roster/updatePoints'],
+  isBatchUpdatingPoint: loading.effects['roster/batchUpdatePoints'],
   isUploadLoading: loading.effects['roster/updateMember'],
 }))(injectIntl(TableList));

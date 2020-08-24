@@ -1,4 +1,11 @@
-import {getPositionList, getRoster, removeMembers, updateMember, updatePoint} from '@/services/roster';
+import {
+  batchUpdateUsers,
+  getPositionList,
+  getRoster,
+  removeMembers,
+  updateMember,
+  updatePoint
+} from '@/services/roster';
 import {Effect, Reducer} from 'umi';
 
 export interface MemberType {
@@ -31,6 +38,7 @@ export interface RosterModelType {
     removeMembers: Effect;
     updateMember: Effect;
     updatePoints: Effect;
+    batchUpdatePoints: Effect;
   };
   reducers: {
     setPositionList: Reducer<StateType>;
@@ -100,11 +108,18 @@ const rosterModel: RosterModelType = {
         type: 'setRoster',
         payload: newRoster
       })
-      // yield put({
-      //   type: 'user/setPoints',
-      //   payload: response
-      // })
     },
+    * batchUpdatePoints({payload}, {call, put, select}) {
+      const response = yield call(batchUpdateUsers, payload);
+      // const roster = yield select((state) => state.roster.roster);
+      // roster.map(user=>{
+      //
+      // })
+      yield put({
+        type: 'setRoster',
+        payload: response
+      })
+    }
   },
   reducers: {
     setPositionList(state: StateType, {payload, type}) {

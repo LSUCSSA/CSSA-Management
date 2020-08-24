@@ -9,6 +9,7 @@ export interface SponsorCompType {
     fileData: object | null;
   };
   slideList: Array<object>;
+  homeSlideModelID: string;
 }
 
 export interface EditorModelType {
@@ -34,6 +35,7 @@ const editorModel: EditorModelType = {
       fileData: null,
     },
     slideList: [],
+    homeSlideModelID: ''
   },
   effects: {
     * getSponsorList(_, {call, put}) {
@@ -56,13 +58,13 @@ const editorModel: EditorModelType = {
         uid: -i,
         id: s.id,
         name: s.name,
-        url: `/api/${s.url}`,
-        status: s.status,
+        url: `/api/${s.formats.small.url}`,
+        status: "done",
         formats: s.formats,
       }));
       yield put({
         type: 'setSlide',
-        payload: data,
+        payload: {modelID: response.id, data},
       });
     },
     * uploadHomeSlide({payload}, {call, put}) {
@@ -77,7 +79,7 @@ const editorModel: EditorModelType = {
       }));
       yield put({
         type: 'setSlide',
-        payload: data,
+        payload: {modelID: response.id, data},
       });
     },
   },
@@ -85,8 +87,8 @@ const editorModel: EditorModelType = {
     setSponsorList(state: SponsorCompType, {payload, type}) {
       return {...state, sponsorsList: JSON.parse(payload.sponsorsList), type};
     },
-    setSlide(state, action) {
-      return {...state, slideList: action.payload};
+    setSlide(state, {payload, type}) {
+      return {...state, slideList: payload.data, homeSlideModelID: payload.modelID, type};
     },
   },
 };

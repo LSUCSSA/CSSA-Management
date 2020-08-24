@@ -30,15 +30,22 @@ export async function removeMembers(params: object) {
     data: params,
   });
 }
-export async function removeMember(id: string ) {
+export async function removeMember(id: string) {
   return request(`/api/users/${id}`, {
     method: 'DELETE',
   });
 }
-export async function updatePoint(param:object ) {
-  console.log(param)
+
+export async function updatePoint(param: object) {
   return request(`/api/users/${param.id}`, {
     method: 'PUT',
     data: {points: param.currPoint + param.point2Update}
+  });
+}
+
+export async function batchUpdateUsers(param: object) {
+  return request(`/api/batchUpdateUsers`, {
+    method: 'POST',
+    data: {IDs: param.IDs, fields: ['points'], updateData: {points: param.point2Update}}
   });
 }
